@@ -1,0 +1,21 @@
+{
+    "scripts": [
+      {
+        "name": "solarblocker.py",
+        "active": true,
+        "settings": {
+          "frequency": "high",
+          "save_logs": false
+        }
+      },
+      {
+        "name": "pdfreader.py",
+        "active": false,
+        "settings": {
+          "frequency": "high",
+          "save_logs": false
+        }
+      }
+    ]
+  }
+  

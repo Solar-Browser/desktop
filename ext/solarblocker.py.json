@@ -1,0 +1,18 @@
+{
+    "settings":[
+        {
+            "active": true
+        }
+    ],
+    "blocked_sites":[
+        {
+            "https://example.com/": true
+        }
+    ],
+    "lists":[
+        {
+            "EasyList Cookie": true,
+            "Fanboy's Notifications": true
+        }
+    ]
+}
