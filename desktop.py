@@ -226,7 +226,7 @@ class SettingsWidget(QWidget):
         layout.setContentsMargins(40, 20, 40, 20)
         layout.setSpacing(20)
         
-        header = QLabel("Gizlilik ve Güvenlik")
+        header = QLabel("Privacy and policy")
         header.setStyleSheet("font-size: 18px; font-weight: bold; margin-bottom: 20px;")
         layout.addWidget(header)
         
@@ -283,7 +283,7 @@ class TabButton(QPushButton):
         
         self.setStyleSheet("""
             QPushButton {
-                background-color: #f0f0f0;
+                background-color: white;
                 border: 1px solid white;
                 border-radius: 4px;
                 padding: 4px 5px;
@@ -671,14 +671,14 @@ class Browser(QMainWindow):
             current_widget.hide()
             current_tab_button.setStyleSheet("""
                 QPushButton {
-                    background-color: #f0f0f0;
+                    background-color: white;
                     border: 1px solid #ccc;
                     border-radius: 4px;
                     padding: 2px 5px;
                     text-align: left;
                 }
                 QPushButton:hover {
-                    background-color: #e0e0e0;
+                    background-color: white;
                 }
             """)
         
