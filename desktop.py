@@ -246,7 +246,7 @@ class SettingsWidget(QWidget):
             switch = QCheckBox(title)
             switch.setChecked(default_state)
             description_label = QLabel(description)
-            description_label.setStyleSheet("color: #666; font-size: 12px;")
+            description_label.setStyleSheet("color: white; font-size: 12px;")
             
             setting_layout.addWidget(switch)
             setting_layout.addWidget(description_label)
@@ -305,11 +305,24 @@ class TabButton(QPushButton):
         else:
             self.favicon.setPixmap(QPixmap("favicon.png").scaled(20, 20))
         self.favicon.setFixedSize(20, 20)
+        self.favicon.setStyleSheet("""
+            QLabel{
+                background-color: white;
+                border: none;
+            }
+        """)
         self.main_layout.addWidget(self.favicon)
 
         self.title_label = QLabel(title)
-        self.title_label.setStyleSheet("font-size: 11px;")
+        self.title_label.setStyleSheet("""
+            QLabel{
+                font-size: 11px;
+                background-color: white;
+                border: none;
+        }
+        """)
         self.main_layout.addWidget(self.title_label)
+        
 
         self.close_btn = QPushButton("×")
         self.close_btn.setFixedSize(20, 20)
