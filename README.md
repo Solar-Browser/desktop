@@ -1,13 +1,63 @@
 # Solar Browser
-Solar for desktop is a Python based web browser. It uses QtWebEngine. I want to do a web engine in future with Python. If I can do, I will use it instead of this. Probably in 1.0 or later versions, I will publish the C++ version of Solar Browser too.
-In C++ version I will use Firefox's Web Engine (Gecko) instead of Chromium based web engine. Thanks for your support!
 
-# How to run?
-This is for if there isn't any release in releases tab and web site of Solar Browser. Also for developers.
-First of all, you need to install Python to your computer. You can install it from: [https://www.python.org/](https://www.python.org/downloads/)
-In Windows, tick the install pip in setup configuration. We will install packages with pip. After install of Python open terminal. Write those;
+Solar Browser is a Python-based web browser for desktop. It uses **QtWebEngine** as its core. In the future, I plan to develop a custom web engine using Python. If successful, this custom engine will replace the current one, likely in version **1.0** or later. Additionally, I aim to release a **C++ version** of Solar Browser, which will utilize **Firefox's Gecko web engine** instead of the Chromium-based engine. 
 
-pip install PyQt5
-pip install PyQtWebEngine
+Thank you for your support!
 
-When these are finished, you can run the desktop.py or you can build.
+---
+
+## Features (Planned and Current)
+- **Current:**
+  - Python-based application using QtWebEngine.
+  - Easy-to-run setup for developers.
+
+- **Future:**
+  - Custom Python-based web engine.
+  - C++ version with Gecko web engine for enhanced performance and compatibility.
+
+---
+
+## How to Run?
+This section is for those who want to run Solar Browser when no releases are available in the [Releases](#) tab or on the official website. It is also intended for developers contributing to the project.
+
+### Prerequisites
+1. **Install Python**:
+   - Download Python from: [https://www.python.org/](https://www.python.org/downloads/).
+   - During installation on Windows, ensure to tick the **Install pip** option in the setup configuration. Pip is required to install dependencies.
+
+2. **Install Required Packages**:
+   - Open a terminal and run the following commands:
+
+     ```bash
+     pip install PyQt5
+     pip install PyQtWebEngine
+     ```
+
+### Running Solar Browser
+1. Once the dependencies are installed, navigate to the project folder in the terminal.
+2. Run the application using the following command:
+
+   ```bash
+   python desktop.py
+   ```
+
+3. Alternatively, you can build the project if required.
+
+---
+
+## For Developers
+For more detailed developer instructions, refer to the [Developer Guide](For%20Developers.md).
+
+---
+
+## Roadmap
+- **Version 0.x**:
+  - Continued improvements and feature enhancements for the Python-based browser.
+- **Version 1.0+**:
+  - Transition to a custom Python-based web engine.
+  - Release of the C++ version with Gecko web engine.
+
+---
+
+### Thank You!
+Your support means everything! If you encounter issues or have suggestions, feel free to contribute or report them via the [GitHub Issues](https://github.com/Solar-Browser/desktop/issues) page.
