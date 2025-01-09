@@ -11,3 +11,6 @@ pip install PyQt5
 pip install PyQtWebEngine
 
 When these are finished, you can run the desktop.py or you can build.
+
+
+[For Developers](For Developers.md)
