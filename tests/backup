@@ -1397,7 +1397,8 @@ class SettingsWidget(QWidget):
         about_layout.addWidget(dev_label)
         
         developers = [
-            "Developed by Ata Türkçü",
+            "Developed by Ata TÜRKÇÜ",
+            "Special thanks to Mustafa ÇAKI"
         ]
         
         for dev in developers:

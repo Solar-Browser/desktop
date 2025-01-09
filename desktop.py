@@ -2401,8 +2401,8 @@ class DownloadsPage(QWidget):
         title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
         header_layout.addWidget(title)
         
-        clear_all_btn = QPushButton("Clear All")
-        clear_all_btn.setStyleSheet("""
+        self.clear_all_btn = QPushButton("Clear All")
+        self.clear_all_btn.setStyleSheet("""
             QPushButton {
                 background-color: #e74c3c;
                 color: white;
@@ -2413,9 +2413,14 @@ class DownloadsPage(QWidget):
             QPushButton:hover {
                 background-color: #c0392b;
             }
+            QPushButton:disabled {
+                background-color: #666;
+                color: #999;
+            }
         """)
-        clear_all_btn.clicked.connect(self.clear_all_downloads)
-        header_layout.addWidget(clear_all_btn, alignment=Qt.AlignRight)
+        self.clear_all_btn.clicked.connect(self.clear_all_downloads)
+        self.clear_all_btn.setEnabled(False)  # Initially disabled
+        header_layout.addWidget(self.clear_all_btn, alignment=Qt.AlignRight)
         
         layout.addWidget(header)
         
@@ -2424,13 +2429,26 @@ class DownloadsPage(QWidget):
         self.downloads_layout = QVBoxLayout(self.downloads_container)
         self.downloads_layout.setContentsMargins(0, 0, 0, 0)
         self.downloads_layout.setSpacing(10)
+        
+        # Empty state message
+        self.empty_label = QLabel("No downloads yet")
+        self.empty_label.setStyleSheet("""
+            QLabel {
+                color: #999;
+                font-size: 14px;
+                padding: 20px;
+            }
+        """)
+        self.empty_label.setAlignment(Qt.AlignCenter)
+        self.downloads_layout.addWidget(self.empty_label)
+        
         self.downloads_layout.addStretch()
         
         # Scroll area for downloads
-        scroll = QScrollArea()
-        scroll.setWidget(self.downloads_container)
-        scroll.setWidgetResizable(True)
-        scroll.setStyleSheet("""
+        self.scroll = QScrollArea()
+        self.scroll.setWidget(self.downloads_container)
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setStyleSheet("""
             QScrollArea {
                 border: none;
                 background-color: transparent;
@@ -2453,28 +2471,53 @@ class DownloadsPage(QWidget):
                 background: none;
             }
         """)
-        layout.addWidget(scroll)
+        layout.addWidget(self.scroll)
+        
+        # Keep track of downloads
+        self.download_widgets = []
     
     def add_download(self, download_item):
+        # Remove empty state if this is the first download
+        if not self.download_widgets:
+            self.empty_label.hide()
+            self.clear_all_btn.setEnabled(True)
+        
         # Remove stretch
-        self.downloads_layout.takeAt(self.downloads_layout.count() - 1)
+        if self.downloads_layout.count() > 0:
+            self.downloads_layout.takeAt(self.downloads_layout.count() - 1)
         
         # Add new download widget
         download_widget = DownloadWidget(download_item, self)
         self.downloads_layout.addWidget(download_widget)
+        self.download_widgets.append(download_widget)
         
         # Add stretch back
         self.downloads_layout.addStretch()
     
     def remove_download(self, download_widget):
-        self.downloads_layout.removeWidget(download_widget)
-        download_widget.deleteLater()
+        if download_widget in self.download_widgets:
+            self.downloads_layout.removeWidget(download_widget)
+            self.download_widgets.remove(download_widget)
+            download_widget.deleteLater()
+            
+            # Show empty state if no downloads left
+            if not self.download_widgets:
+                self.empty_label.show()
+                self.clear_all_btn.setEnabled(False)
     
+
+    #sdpyqt0.0.0.2-bt instant crash fix here
     def clear_all_downloads(self):
-        while self.downloads_layout.count() > 1:  # Keep the stretch
-            item = self.downloads_layout.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+        # Clear all downloads except the empty label and stretch
+        for widget in self.download_widgets[:]:  # Create a copy of the list to iterate
+            self.remove_download(widget)
+        
+        # Reset the list
+        self.download_widgets = []
+        
+        # Show empty state
+        self.empty_label.show()
+        self.clear_all_btn.setEnabled(False)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
