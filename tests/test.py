@@ -5,11 +5,11 @@ from PyQt5.QtWidgets import (
     QHBoxLayout, QVBoxLayout, QLineEdit, QLabel, QDialog,
     QTabWidget, QCheckBox, QGroupBox, QRadioButton, QComboBox, QMessageBox, QStackedWidget,
     QShortcut, QScrollArea, QProgressBar, QFileDialog, QSizeGrip, QTextEdit, QMenu, QSplitter,
-    QCompleter, QGridLayout, QGraphicsDropShadowEffect
+    QCompleter
 )
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineDownloadItem, QWebEngineProfile, QWebEnginePage, QWebEngineSettings
 from PyQt5.QtCore import QUrl, Qt, QMimeData, QSettings, QTimer, QSize, QStandardPaths, QPropertyAnimation, QEasingCurve, QRect, QPoint, QStringListModel
-from PyQt5.QtGui import QIcon, QPixmap, QDrag, QKeySequence, QColor
+from PyQt5.QtGui import QIcon, QPixmap, QDrag, QKeySequence
 from PyQt5.QtGui import QDesktopServices
 
 translations = {
@@ -1674,7 +1674,7 @@ class SettingsWidget(QWidget):
         nav_layout = QHBoxLayout(self.nav_panel)
         nav_layout.setContentsMargins(10, 0, 10, 0)
         nav_layout.setSpacing(4)
-        self.nav_panel.setStyleSheet("background-color:rgb(164, 163, 163);")
+        self.nav_panel.setStyleSheet("background-color:rgb(184, 175, 175);")
 
         # Navigation buttons on the left
         nav_buttons = [
@@ -1708,7 +1708,7 @@ class SettingsWidget(QWidget):
         url_container.setMinimumWidth(400)
         url_container.setStyleSheet("""
             QWidget {
-                background-color: #dee0e1;
+                background-color: #f0eded;
                 border-radius: 8px;
             }
         """)
@@ -1729,7 +1729,7 @@ class SettingsWidget(QWidget):
                 padding: 2px;
                 font-size: 13px;
                 selection-background-color: rgb(154, 188, 218);
-                color: black;
+                color: white;
             }
         """)
         self.url_bar.returnPressed.connect(self.navigate_to_url)
@@ -2051,7 +2051,7 @@ class TabButton(QPushButton):
             QPushButton {
                 background-color: white;
                 border: none;
-                border-radius: 12px;
+                border-radius: 8px;
                 padding: 4px 8px;
                 text-align: left;
             }
@@ -2238,21 +2238,7 @@ class Browser(QMainWindow):
         self.setup_navigation_bar(layout)
         self.setup_web_container(layout)
 
-        # Apply theme
-        self.apply_theme(self.settings.value('theme', 'Light'))
-
-        # Check if this is first start
-        if not self.settings.value('has_shown_welcome', False, type=bool):
-            self.add_new_tab()
-            self.show_welcome_page()
-            self.settings.setValue('has_shown_welcome', True)
-        else:
-            self.show_warning()
-            self.add_new_tab()
-
-        self.setMinimumSize(1000, 800)
-        self.drag_pos = None
-        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.show_warning()
         self.setup_shortcuts()
         
         # Setup download handling
@@ -2261,207 +2247,6 @@ class Browser(QMainWindow):
         
         # Add corner grips for resizing
         self.setup_corner_grips()
-
-    def apply_theme(self, theme):
-        if theme == 'Dark':
-            self.setStyleSheet("""
-                QMainWindow, QWidget {
-                    background-color: #1a1a1a;
-                    color: #ffffff;
-                }
-                QTabWidget::pane {
-                    border: none;
-                    background-color: #1a1a1a;
-                }
-                QLineEdit {
-                    background-color: #333333;
-                    color: #ffffff;
-                    border: 1px solid #444444;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-                QPushButton {
-                    background-color: #333333;
-                    color: #ffffff;
-                    border: none;
-                    border-radius: 5px;
-                    padding: 5px 10px;
-                }
-                QPushButton:hover {
-                    background-color: #444444;
-                }
-                QPushButton:pressed {
-                    background-color: #2a2a2a;
-                }
-                QComboBox {
-                    background-color: #333333;
-                    color: #ffffff;
-                    border: 1px solid #444444;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-                QComboBox::drop-down {
-                    border: none;
-                }
-                QComboBox::down-arrow {
-                    image: url(res/down-arrow-white.png);
-                }
-                QMenu {
-                    background-color: #1a1a1a;
-                    color: #ffffff;
-                    border: 1px solid #444444;
-                }
-                QMenu::item:selected {
-                    background-color: #2196f3;
-                }
-                QScrollBar:vertical {
-                    background-color: #1a1a1a;
-                    width: 10px;
-                }
-                QScrollBar::handle:vertical {
-                    background-color: #444444;
-                    border-radius: 5px;
-                }
-                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-                    height: 0px;
-                }
-                TabButton {
-                    background-color: #333333;
-                    color: #ffffff;
-                    border: none;
-                    border-radius: 5px;
-                    padding: 5px 10px;
-                    margin: 2px;
-                }
-                TabButton:hover {
-                    background-color: #444444;
-                }
-                TabButton[selected="true"] {
-                    background-color: #2196f3;
-                    color: white;
-                }
-                #url_bar {
-                    background-color: #333333;
-                    color: white;
-                    border: 1px solid #444444;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-                #url_bar:focus {
-                    border: 1px solid #2196f3;
-                }
-                #navigation_bar {
-                    background-color: #1a1a1a;
-                    border-bottom: 1px solid #444444;
-                }
-                #top_bar {
-                    background-color: #1a1a1a;
-                    border-bottom: 1px solid #444444;
-                }
-                #web_container {
-                    background-color: #1a1a1a;
-                }
-            """)
-        else:  # Light theme
-            self.setStyleSheet("""
-                QMainWindow, QWidget {
-                    background-color: white;
-                    color: #333333;
-                }
-                QTabWidget::pane {
-                    border: none;
-                    background-color: white;
-                }
-                QLineEdit {
-                    background-color: white;
-                    color: #333333;
-                    border: 1px solid #dddddd;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-                QPushButton {
-                    background-color: white;
-                    color: #333333;
-                    border: none;
-                    border-radius: 5px;
-                    padding: 5px 10px;
-                }
-                QPushButton:hover {
-                    background-color: #f5f5f5;
-                }
-                QPushButton:pressed {
-                    background-color: #e0e0e0;
-                }
-                QComboBox {
-                    background-color: white;
-                    color: #333333;
-                    border: 1px solid #dddddd;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-                QComboBox::drop-down {
-                    border: none;
-                }
-                QComboBox::down-arrow {
-                    image: url(res/down-arrow.png);
-                }
-                QMenu {
-                    background-color: white;
-                    color: #333333;
-                    border: 1px solid #dddddd;
-                }
-                QMenu::item:selected {
-                    background-color: #2196f3;
-                    color: white;
-                }
-                QScrollBar:vertical {
-                    background-color: white;
-                    width: 10px;
-                }
-                QScrollBar::handle:vertical {
-                    background-color: #dddddd;
-                    border-radius: 5px;
-                }
-                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-                    height: 0px;
-                }
-                TabButton {
-                    background-color: white;
-                    color: #333333;
-                    border: none;
-                    border-radius: 5px;
-                    padding: 5px 10px;
-                    margin: 2px;
-                }
-                TabButton:hover {
-                    background-color: #f5f5f5;
-                }
-                TabButton[selected="true"] {
-                    background-color: #2196f3;
-                    color: white;
-                }
-                #url_bar {
-                    background-color: white;
-                    color: #333333;
-                    border: 1px solid #dddddd;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-                #url_bar:focus {
-                    border: 1px solid #2196f3;
-                }
-                #navigation_bar {
-                    background-color: white;
-                    border-bottom: 1px solid #dddddd;
-                }
-                #top_bar {
-                    background-color: white;
-                    border-bottom: 1px solid #dddddd;
-                }
-                #web_container {
-                    background-color: white;
-                }
-            """)
 
     def setup_corner_grips(self):
         # Create corner grips
@@ -2552,22 +2337,40 @@ class Browser(QMainWindow):
     
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            if self.isMaximized():
+            # Check if click is in window controls area
+            if event.y() < 40 and event.x() > self.width() - 100:  # Window controls area
+                event.ignore()  # Let the button handle the click
                 return
-            self.drag_pos = event.globalPos() - self.frameGeometry().topLeft()
-            self.drag_start_pos = event.pos()
-            event.accept()
-
+                
+            if event.y() < 40:  # Top area for dragging
+                self.drag_pos = event.globalPos() - self.pos()
+                event.accept()
+            # Handle corner resizing
+            for grip in self.corner_grips:
+                if grip.geometry().contains(event.pos()):
+                    return
+    
     def mouseMoveEvent(self, event):
-        if event.buttons() == Qt.LeftButton:
-            if self.isMaximized():
-                return
-            if not hasattr(self, 'drag_start_pos'):
-                self.drag_start_pos = event.pos()
-            if (event.pos() - self.drag_start_pos).manhattanLength() < QApplication.startDragDistance():
-                return
-            self.move(event.globalPos() - self.drag_pos)
-            event.accept()
+        if not hasattr(self, 'drag_pos') and self.drag_start_pos is None:
+            super().mouseMoveEvent(event)
+            return
+            
+        # Only start drag if we've moved far enough
+        if (event.pos() - self.drag_start_pos).manhattanLength() < QApplication.startDragDistance():
+            super().mouseMoveEvent(event)
+            return
+
+        try:
+            drag = QDrag(self)
+            mime_data = QMimeData()
+            mime_data.setText('tab_drag')
+            drag.setMimeData(mime_data)
+            
+            result = drag.exec_(Qt.MoveAction)
+            self.drag_start_pos = None  # Clear drag state
+        except Exception as e:
+            print(f"Error in mouseMoveEvent: {e}")
+            self.drag_start_pos = None  # Clear drag state on error
 
     def mouseReleaseEvent(self, event):
         self.drag_pos = None
@@ -2601,13 +2404,10 @@ class Browser(QMainWindow):
                 current_widget = self.tabs[self.current_tab][1]
                 if isinstance(current_widget, QWebEngineView):
                     url = self.url_bar.text().strip()
-                    print(f"Navigating to URL: {url}")  # Debug log
                     
                     # Handle internal URLs
                     if url.startswith("solar://"):
-                        print(f"Handling internal URL: {url}")  # Debug log
                         if url == "solar://welcome":
-                            print("Showing welcome page")  # Debug log
                             self.show_welcome_page()
                             return
                         elif url == "solar://settings":
@@ -2715,33 +2515,6 @@ class Browser(QMainWindow):
             self.switch_to_tab(current_index)
         except Exception as e:
             print(f"Error in show_settings: {e}")
-
-    def show_welcome_page(self):
-        try:
-            print("show_welcome_page called")  # Debug log
-            if self.current_tab is not None:
-                print(f"Current tab exists: {self.current_tab}")  # Debug log
-                current_widget = self.tabs[self.current_tab][1]
-                print(f"Current widget type: {type(current_widget)}")  # Debug log
-                if isinstance(current_widget, QWebEngineView):
-                    print("Creating welcome page")  # Debug log
-                    welcome_page = WelcomePage(current_widget)
-                    current_widget.setFixedSize(800, 600)
-                    current_widget.hide()
-                    self.web_layout.addWidget(welcome_page)
-                    welcome_page.show()
-                    
-                    # Center the welcome page
-                    screen = QApplication.primaryScreen().geometry()
-                    welcome_page.setGeometry(
-                        screen.width()//2 - 400,
-                        screen.height()//2 - 300,
-                        800,
-                        600
-                    )
-                    print("Welcome page shown")  # Debug log
-        except Exception as e:
-            print(f"Error in show_welcome_page: {e}")  # Debug log
 
     def show_downloads(self):
         try:
@@ -2862,10 +2635,26 @@ class Browser(QMainWindow):
         if response == QMessageBox.No:
             sys.exit()
 
+        main_widget = QWidget()
+        self.setCentralWidget(main_widget)
+        layout = QVBoxLayout(main_widget)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0,0,0,0)
+
+        self.setup_top_bar(layout)
+        self.setup_navigation_bar(layout)
+        self.setup_web_container(layout)
+
+        self.add_new_tab()
+        self.setMinimumSize(1000, 800)
+
+        self.drag_pos = None
+        self.setWindowFlag(Qt.FramelessWindowHint)
+
     def setup_top_bar(self, parent_layout):
         self.top_bar = QWidget()
         self.top_bar.setFixedHeight(43)  # 36px for tab + 5px spacing + 2px margin
-        self.top_bar.setStyleSheet("background-color: #EDEDED;")
+        self.top_bar.setStyleSheet("background-color: white;")
         top_layout = QHBoxLayout(self.top_bar)
         top_layout.setContentsMargins(10, 0, 10, 5)  # 5px bottom margin
         top_layout.setSpacing(8)
@@ -2951,7 +2740,7 @@ class Browser(QMainWindow):
         nav_layout = QHBoxLayout(self.nav_panel)
         nav_layout.setContentsMargins(10, 0, 10, 0)
         nav_layout.setSpacing(4)
-        self.nav_panel.setStyleSheet("background-color: #eaeaea;")
+        self.nav_panel.setStyleSheet("background-color: #e6e6e6;")
 
         # Navigation buttons on the left
         nav_buttons = [
@@ -2973,7 +2762,7 @@ class Browser(QMainWindow):
                     border-radius: 6px;
                 }
                 QPushButton:hover {
-                    background-color: #E8E8E8;
+                    background-color: #e0e0e0;
                 }
             """)
             btn.clicked.connect(callback)
@@ -2985,7 +2774,7 @@ class Browser(QMainWindow):
         url_container.setMinimumWidth(800)
         url_container.setStyleSheet("""
             QWidget {
-                background-color: #dee0e1;
+                background-color: #cfcfcf;
                 border-radius: 8px;
             }
         """)
@@ -3006,7 +2795,7 @@ class Browser(QMainWindow):
                 padding: 2px;
                 font-size: 13px;
                 selection-background-color: rgb(154, 188, 218);
-                color: black;
+                color: white;
             }
         """)
         self.url_bar.returnPressed.connect(self.navigate_to_url)
@@ -3028,7 +2817,7 @@ class Browser(QMainWindow):
                 border-radius: 6px;
             }
             QPushButton:hover {
-                background-color: #E8E8E8;
+                background-color: #e0e0e0;
             }
         """)
         menu_btn.clicked.connect(self.show_menu)
@@ -3211,7 +3000,7 @@ class Browser(QMainWindow):
         new_widget.show()
         new_tab_button.setStyleSheet("""
             QPushButton {
-                background-color: white;
+                background-color: rgb(200, 200, 200);
                 border: none;
                 border-radius: 8px;
                 padding: 2px 5px;
@@ -3798,444 +3587,6 @@ class CustomWebEnginePage(QWebEnginePage):
         if hasattr(self, 'splitter'):
             self.splitter.deleteLater()
         super().deleteLater()
-
-class WelcomePage(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.settings = QSettings('Solar', 'Browser')
-        self.current_theme = self.settings.value('theme', 'Light')
-        self.apply_theme(self.current_theme)
-
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
-
-        # Create stacked widget for pages
-        self.pages = QStackedWidget()
-        main_layout.addWidget(self.pages)
-
-        # Create pages
-        self.setup_welcome_page()
-        self.setup_language_page()
-        self.setup_theme_page()
-        self.setup_search_page()
-
-        # Start with welcome page
-        self.pages.setCurrentIndex(0)
-
-    def apply_theme(self, theme):
-        if theme == 'Dark':
-            self.setStyleSheet("""
-                QWidget {
-                    background-color: #1a1a1a;
-                    color: #ffffff;
-                }
-                QLabel {
-                    color: #ffffff;
-                }
-                QPushButton {
-                    background-color: #2196f3;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    padding: 15px 30px;
-                    font-size: 16px;
-                    font-weight: bold;
-                }
-                QPushButton:hover {
-                    background-color: #1976d2;
-                }
-                QComboBox {
-                    padding: 12px;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    background: #333333;
-                    color: white;
-                    min-width: 200px;
-                }
-                QComboBox:hover {
-                    background: #444444;
-                }
-                QPushButton[class="search-engine-btn"] {
-                    background-color: #333333;
-                    color: white;
-                    border: 1px solid #444444;
-                    border-radius: 15px;
-                }
-                QPushButton[class="search-engine-btn"]:hover {
-                    background-color: #444444;
-                }
-                QPushButton[class="search-engine-btn"]:checked {
-                    background-color: #1a237e;
-                    border: 2px solid #2196f3;
-                }
-                QPushButton[class="theme-btn"] {
-                    background-color: #333333;
-                    color: white;
-                    border: 1px solid #444444;
-                    border-radius: 15px;
-                }
-                QPushButton[class="theme-btn"]:hover {
-                    background-color: #444444;
-                }
-                QPushButton[class="theme-btn"]:checked {
-                    background-color: #1a237e;
-                    border: 2px solid #2196f3;
-                }
-            """)
-        else:  # Light theme
-            self.setStyleSheet("""
-                QWidget {
-                    background-color: white;
-                    color: #333333;
-                }
-                QLabel {
-                    color: #333333;
-                }
-                QPushButton {
-                    background-color: #2196f3;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    padding: 15px 30px;
-                    font-size: 16px;
-                    font-weight: bold;
-                }
-                QPushButton:hover {
-                    background-color: #1976d2;
-                }
-                QComboBox {
-                    padding: 12px;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    background: #f5f5f5;
-                    min-width: 200px;
-                }
-                QComboBox:hover {
-                    background: #ebebeb;
-                }
-                QPushButton[class="search-engine-btn"] {
-                    background-color: white;
-                    color: #333333;
-                    border: 1px solid #ddd;
-                    border-radius: 15px;
-                }
-                QPushButton[class="search-engine-btn"]:hover {
-                    background-color: #f5f5f5;
-                }
-                QPushButton[class="search-engine-btn"]:checked {
-                    background-color: #e3f2fd;
-                    border: 2px solid #2196f3;
-                }
-                QPushButton[class="theme-btn"] {
-                    background-color: white;
-                    color: #333333;
-                    border: 1px solid #ddd;
-                    border-radius: 15px;
-                }
-                QPushButton[class="theme-btn"]:hover {
-                    background-color: #f5f5f5;
-                }
-                QPushButton[class="theme-btn"]:checked {
-                    background-color: #e3f2fd;
-                    border: 2px solid #2196f3;
-                }
-            """)
-
-    def setup_welcome_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        layout.setContentsMargins(40, 40, 40, 40)
-        layout.setSpacing(20)
-        layout.setAlignment(Qt.AlignCenter)
-
-        # Logo
-        logo_label = QLabel()
-        logo_pixmap = QPixmap("res/logo.png")
-        if not logo_pixmap.isNull():
-            logo_label.setPixmap(logo_pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-        logo_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(logo_label)
-
-        # Welcome text
-        welcome_text = QLabel("Welcome to Solar Browser")
-        welcome_text.setStyleSheet("font-size: 32px; font-weight: bold; margin: 20px 0;")
-        welcome_text.setAlignment(Qt.AlignCenter)
-        layout.addWidget(welcome_text)
-
-        # Description
-        desc_text = QLabel("Your gateway to a faster, more secure browsing experience.\nClick 'Get Started' to customize your browser settings.")
-        desc_text.setStyleSheet("font-size: 16px; color: #666; margin-bottom: 40px;")
-        desc_text.setAlignment(Qt.AlignCenter)
-        layout.addWidget(desc_text)
-
-        # Get Started button
-        get_started_btn = QPushButton("Get Started")
-        get_started_btn.setFixedWidth(200)
-        get_started_btn.clicked.connect(lambda: self.pages.setCurrentIndex(1))
-        layout.addWidget(get_started_btn, alignment=Qt.AlignCenter)
-
-        self.pages.addWidget(page)
-
-    def setup_language_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        layout.setContentsMargins(40, 40, 40, 40)
-        layout.setSpacing(20)
-        layout.setAlignment(Qt.AlignCenter)
-
-        # Title
-        title = QLabel("Choose Your Language")
-        title.setStyleSheet("font-size: 24px; font-weight: bold; margin-bottom: 20px;")
-        title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
-
-        # Language selection
-        self.language_combo = QComboBox()
-        self.language_combo.addItems(['English', 'Türkçe', 'Русский'])
-        self.language_combo.setCurrentText({
-            'en': 'English',
-            'tr': 'Türkçe',
-            'ru': 'Русский'
-        }.get(self.settings.value('language', 'en'), 'English'))
-        layout.addWidget(self.language_combo, alignment=Qt.AlignCenter)
-
-        # Navigation buttons
-        btn_container = QWidget()
-        btn_layout = QHBoxLayout(btn_container)
-        btn_layout.setSpacing(20)
-
-        back_btn = QPushButton("Back")
-        back_btn.clicked.connect(lambda: self.pages.setCurrentIndex(0))
-        next_btn = QPushButton("Next")
-        next_btn.clicked.connect(lambda: self.pages.setCurrentIndex(2))
-
-        btn_layout.addWidget(back_btn)
-        btn_layout.addWidget(next_btn)
-        layout.addWidget(btn_container, alignment=Qt.AlignCenter)
-
-        self.pages.addWidget(page)
-
-    def setup_theme_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        layout.setContentsMargins(40, 40, 40, 40)
-        layout.setSpacing(20)
-        layout.setAlignment(Qt.AlignCenter)
-
-        # Title
-        title = QLabel("Choose Your Theme")
-        title.setStyleSheet("font-size: 24px; font-weight: bold; margin-bottom: 20px;")
-        title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
-
-        # Theme selection
-        themes_container = QWidget()
-        themes_layout = QHBoxLayout(themes_container)
-        themes_layout.setSpacing(30)
-
-        self.theme_buttons = []
-        for theme in ["Light", "Dark"]:
-            btn = QPushButton()
-            btn.setProperty("class", "theme-btn")
-            btn.setCheckable(True)
-            btn.setFixedSize(200, 150)
-            
-            btn_layout = QVBoxLayout(btn)
-            btn_layout.setAlignment(Qt.AlignCenter)
-            
-            icon = QLabel("🌞" if theme == "Light" else "🌙")
-            icon.setStyleSheet("font-size: 32px;")
-            icon.setAlignment(Qt.AlignCenter)
-            
-            name = QLabel(theme)
-            name.setStyleSheet("color: #333; font-size: 16px; font-weight: bold;")
-            name.setAlignment(Qt.AlignCenter)
-            
-            btn_layout.addWidget(icon)
-            btn_layout.addWidget(name)
-            
-            if theme == self.settings.value('theme', 'Light'):
-                btn.setChecked(True)
-            
-            btn.clicked.connect(lambda checked, t=theme: self.select_theme(t))
-            self.theme_buttons.append(btn)
-            themes_layout.addWidget(btn)
-
-        layout.addWidget(themes_container)
-
-        # Navigation buttons
-        btn_container = QWidget()
-        btn_layout = QHBoxLayout(btn_container)
-        btn_layout.setSpacing(20)
-
-        back_btn = QPushButton("Back")
-        back_btn.clicked.connect(lambda: self.pages.setCurrentIndex(1))
-        next_btn = QPushButton("Next")
-        next_btn.clicked.connect(lambda: self.pages.setCurrentIndex(3))
-
-        btn_layout.addWidget(back_btn)
-        btn_layout.addWidget(next_btn)
-        layout.addWidget(btn_container, alignment=Qt.AlignCenter)
-
-        self.pages.addWidget(page)
-
-    def setup_search_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
-        layout.setContentsMargins(40, 40, 40, 40)
-        layout.setSpacing(20)
-        layout.setAlignment(Qt.AlignCenter)
-
-        # Title
-        title = QLabel("Choose Your Search Engine")
-        title.setStyleSheet("font-size: 24px; font-weight: bold; margin-bottom: 20px;")
-        title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
-
-        # Search engine grid
-        grid = QGridLayout()
-        grid.setSpacing(20)
-
-        self.search_buttons = []
-        search_engines = [
-            ("Google", "res/google.svg"),
-            ("DuckDuckGo", "res/duckduckgo.svg"),
-            ("Bing", "res/bing.svg"),
-            ("Yandex", "res/yandex.svg")
-        ]
-
-        for i, (name, logo_path) in enumerate(search_engines):
-            btn = QPushButton()
-            btn.setProperty("class", "search-engine-btn")
-            btn.setCheckable(True)
-            btn.setFixedSize(180, 150)
-            
-            btn_layout = QVBoxLayout(btn)
-            btn_layout.setAlignment(Qt.AlignCenter)
-            
-            logo_label = QLabel()
-            logo_pixmap = QPixmap(logo_path)
-            if not logo_pixmap.isNull():
-                logo_label.setPixmap(logo_pixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            logo_label.setAlignment(Qt.AlignCenter)
-            
-            name_label = QLabel(name)
-            name_label.setStyleSheet("color: #333; font-size: 16px; font-weight: bold;")
-            name_label.setAlignment(Qt.AlignCenter)
-            
-            btn_layout.addWidget(logo_label)
-            btn_layout.addWidget(name_label)
-            
-            if name == self.settings.value('default_search_engine', 'Google'):
-                btn.setChecked(True)
-            
-            btn.clicked.connect(lambda checked, n=name: self.select_search_engine(n))
-            self.search_buttons.append(btn)
-            grid.addWidget(btn, i // 2, i % 2)
-
-        grid_widget = QWidget()
-        grid_widget.setLayout(grid)
-        layout.addWidget(grid_widget, alignment=Qt.AlignCenter)
-
-        # Navigation buttons
-        btn_container = QWidget()
-        btn_layout = QHBoxLayout(btn_container)
-        btn_layout.setSpacing(20)
-
-        back_btn = QPushButton("Back")
-        back_btn.clicked.connect(lambda: self.pages.setCurrentIndex(2))
-        finish_btn = QPushButton("Finish")
-        finish_btn.clicked.connect(self.save_preferences)
-
-        btn_layout.addWidget(back_btn)
-        btn_layout.addWidget(finish_btn)
-        layout.addWidget(btn_container, alignment=Qt.AlignCenter)
-
-        self.pages.addWidget(page)
-
-    def select_theme(self, theme):
-        for btn in self.theme_buttons:
-            btn.setChecked(btn.layout().itemAt(1).widget().text() == theme)
-        self.apply_theme(theme)
-        if isinstance(self.parent(), Browser):
-            self.parent().apply_theme(theme)
-
-    def select_search_engine(self, name):
-        for btn in self.search_buttons:
-            btn.setChecked(btn.layout().itemAt(1).widget().text() == name)
-
-    def save_preferences(self):
-        # Save language
-        language_map = {
-            'English': 'en',
-            'Türkçe': 'tr',
-            'Русский': 'ru'
-        }
-        self.settings.setValue('language', language_map[self.language_combo.currentText()])
-        
-        # Save theme
-        for btn in self.theme_buttons:
-            if btn.isChecked():
-                theme = btn.layout().itemAt(1).widget().text()
-                self.settings.setValue('theme', theme)
-                if isinstance(self.parent(), Browser):
-                    self.parent().apply_theme(theme)
-                break
-        
-        # Save search engine
-        for btn in self.search_buttons:
-            if btn.isChecked():
-                engine_name = btn.layout().itemAt(1).widget().text()
-                self.settings.setValue('default_search_engine', engine_name)
-                break
-        
-        self.settings.sync()
-        
-        # Close the welcome page and return to browser
-        self.close()
-        self.deleteLater()
-
-    def show_welcome_page(self):
-        try:
-            if hasattr(self, 'new_tab_btn'):
-                self.tab_layout.removeWidget(self.new_tab_btn)
-                self.new_tab_btn.setParent(None)
-            
-            current_index = len(self.tabs)
-            tab_button = TabButton("Welcome", None, lambda: self.close_tab(current_index))
-            tab_button.clicked.connect(lambda: self.switch_to_tab(current_index))
-            self.tab_layout.addWidget(tab_button)
-            
-            welcome_page = WelcomePage(self)
-            welcome_page.hide()
-            self.web_layout.addWidget(welcome_page)
-            self.tabs.append((tab_button, welcome_page))
-            
-            if not hasattr(self, 'new_tab_btn'):
-                self.new_tab_btn = QPushButton("+")
-                self.new_tab_btn.setFixedSize(25, 25)
-                self.new_tab_btn.setStyleSheet("""
-                    QPushButton {
-                        background-color: transparent;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        margin-left: 2px;
-                    }
-                    QPushButton:hover {
-                        background-color: #ddd;
-                    }
-                """)
-                self.new_tab_btn.clicked.connect(self.add_new_tab)
-            
-            self.tab_layout.addWidget(self.new_tab_btn)
-            self.update_tab_layout()
-            self.switch_to_tab(current_index)
-        except Exception as e:
-            print(f"Error in show_welcome_page: {e}")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
